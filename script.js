@@ -34,11 +34,11 @@ $(document).ready(function() {
     // 質問票のデータ
     const questionnaire = {
         "title": "生活のしやすさに関する質問票",
-        "instructions": "これは生活の中で患者さんやご家族が感じるつらさについて、必要に応じて医療スタッフがサポートするための質問票です。",
+        "instructions": "これは生活の中で患者さんやご家族が感じるつらさについて情報を共有し、必要に応じて医療スタッフがサポートするための質問票です。",
         "questions": [
             {
                 "id": 0,
-                "question": "患者さんと回答者のご関係を教えて下さい",
+                "question": "患者さんとご回答者のご関係を教えて下さい",
                 "type": "single_choice",
                 "options": ["ご本人", "ご家族", "医療者"]
             },
@@ -48,19 +48,19 @@ $(document).ready(function() {
                 "type": "single_choice",
                 "subItems": [
                     {
-                        "item": "病状や治療について詳しく知りたいことや相談したいことがある",
+                        "item": "病状や治療について詳しく知りたいことや相談したいことはありますか？",
                         "options": ["あり", "なし"]
                     },
                     {
-                        "item": "経済的な心配や制度で分からないことがある",
+                        "item": "経済的な心配や制度で分からないことがありますか？",
                         "options": ["あり", "なし"]
                     },
                     {
-                        "item": "日常生活で困っていることがある（食事・入浴・移動・排尿・排便など）",
+                        "item": "日常生活で困っていることがありますか？（食事・入浴・移動・排尿・排便など）",
                         "options": ["あり", "なし"]
                     },
                     {
-                        "item": "通院がたいへん",
+                        "item": "通院が大変だと感じることがありますか？",
                         "options": ["あり", "なし"]
                     }
                 ]
@@ -106,29 +106,29 @@ $(document).ready(function() {
             },
             {
                 "id": 4,
-                "question": "専門のチームへの相談を希望しますか？",
+                "question": "以下の専門のチームへの相談を希望するかどうかについてお尋ねします",
                 "type": "single_choice",
                 "subItems": [
                     {
-                        "item": "痛みなどからだの症状や気持ちのつらさに対応する緩和ケア医師、看護師",
+                        "item": "痛みなどからだの症状や気持ちのつらさに対応する緩和ケア医師、看護師への相談を希望しますか？",
                         "options": [
-                            "すぐに希望する",
+                            "希望する",
                             "必要になったら希望する",
                             "希望しない"
                         ]
                     },
                     {
-                        "item": "経済的な問題や、制度の疑問に対応する医療ソーシャルワーカー",
+                        "item": "経済的な問題や、制度の疑問に対応する医療ソーシャルワーカーへの相談を希望しますか？",
                         "options": [
-                            "すぐに希望する",
+                            "希望する",
                             "必要になったら希望する",
                             "希望しない"
                         ]
                     },
                     {
-                        "item": "自宅での生活がしやすいように、利用できるサービスがあるかを相談したい",
+                        "item": "自宅での生活がしやすいように、利用できるサービスがあるかどうかについて、相談を希望しますか？",
                         "options": [
-                            "すぐに希望する",
+                            "希望する",
                             "必要になったら希望する",
                             "希望しない"
                         ]
@@ -383,11 +383,24 @@ $(document).ready(function() {
                         addUserMessage(option);
                     }
                     
-                    // 通常通り次の質問へ
-                    setTimeout(() => {
-                        currentQuestionIndex++;
-                        showQuestion(currentQuestionIndex);
-                    }, 800);
+                    // 質問ID 2で「0: 症状なし」が選択された場合の特別処理
+                    if (question.id === 2 && option === "0: 症状なし") {
+                        // 質問2.1をスキップして、「症状なし」を回答として設定
+                        answers[2.1] = "症状なし";
+                        
+                        // 質問3に直接進む（質問2.1をスキップ）
+                        setTimeout(() => {
+                            // currentQuestionIndexを2つ進める（2.1をスキップ）
+                            currentQuestionIndex += 2;
+                            showQuestion(currentQuestionIndex);
+                        }, 800);
+                    } else {
+                        // 通常通り次の質問へ
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            showQuestion(currentQuestionIndex);
+                        }, 800);
+                    }
                 }
             });
             
@@ -405,7 +418,7 @@ $(document).ready(function() {
     function createOpenEndedInput(questionIndex) {
         const $inputContainer = $('<div class="text-input-container"></div>');
         const $textInput = $('<textarea class="text-input" rows="3" placeholder="こちらに入力してください"></textarea>');
-        const $submitButton = $('<button class="text-submit">回答</button>');
+        const $submitButton = $('<button class="text-submit">確定</button>');
         
         $inputContainer.append($textInput, $submitButton);
         $('#chatMessages').append($inputContainer);
