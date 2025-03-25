@@ -749,11 +749,21 @@ $(document).ready(function() {
         $('#qrcode').append('<h3>QRコード</h3>');
         $('#qrcode').append('<p>このQRコードをスキャンすると回答データが取得できます。</p>');
         
+        // UTF-8からShift_JISに変換
+        const utf8Array = Encoding.stringToCode(data);
+        const sjisArray = Encoding.convert(utf8Array, {
+            to: 'SJIS',
+            from: 'UNICODE'
+        });
+        
+        // バイナリ文字列に変換
+        const sjisStr = Encoding.codeToString(sjisArray);
+        
         const $qrDiv = $('<div></div>');
         $qrDiv.qrcode({
-            text: data,
-            width: 200,
-            height: 200
+            text: sjisStr,
+            width: 256,
+            height: 256
         });
         
         $('#qrcode').append($qrDiv);
